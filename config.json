@@ -1,0 +1,15 @@
+{
+  "routes":
+  [
+    { "path": "/", "method":"POST", "callback": "application#index" },
+    { "path": "/getNodes", "method":"GET", "callback": "application#getNodes" }
+  ],
+  "filters":
+  [
+  	 { "path": "/", "callback": "" }
+  ],
+  "websockets":
+  [
+  	{ "event": "", "callback": ""}
+  ]
+}
