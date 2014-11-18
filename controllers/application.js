@@ -91,39 +91,38 @@ function index(req, res) {
 		        }
 		    }
 			
-			fs.appendFile("./test1.json", JSON.stringify(chartJson, null, 4), function(err) {
+			fs.writeFile("./data-nodes.json", JSON.stringify(chartJson, null, 4), function(err) {
 				if(err) {
 					console.log(err);
 				} else {
 					console.log("The file was saved!");
+					res.writeHead(200);
+    				res.end();
 				}
 			});
 		}
-	});
-	req.on('end', function () {
-    	res.writeHead(200);
-    	res.end();
 	});
 }
 
 function getNodes(req, res){
 	var fs = require('fs'); //file handling module
 	var responseJSON ={};
-	req.on('end', function(responseJSON){
-		fs.readFile('./test1.json', 'utf8', function (err, data) {
-			if (err) {
+	fs.readFile('./data-nodes.json', 'utf8', function (err, data) {
+		if (err) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send( "Not found", 404 );
+			res.end();
+		}else{
+			if(data){
+				responseJSON = JSON.parse(data);
 				res.setHeader('Content-Type', 'application/json');
-				res.send( "Not found", 404 );
+				res.send(data);
+				res.end();
 			}else{
-				if(data){
-					responseJSON = JSON.parse(data);
-					res.setHeader('Content-Type', 'application/json');
-					res.json(responseJSON);
-				}else{
-					res.setHeader('Content-Type', 'application/json');
-					res.json({'err':'fail'});
-	  			}
+				res.setHeader('Content-Type', 'application/json');
+				res.json({'err':'fail'});
+				res.end();
   			}
-		});
+		}
 	});
 }

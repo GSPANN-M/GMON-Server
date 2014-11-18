@@ -19,6 +19,7 @@
   },
   "preferGlobal": false,
   "dependencies": {
+  	"xml2json":"*"
   },
   "license":"",
   "private": true
