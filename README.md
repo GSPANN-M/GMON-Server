@@ -1,4 +1,4 @@
-GMON-Server-test
+GMON-Server
 ===========
 
 GMON - Node ACS application
