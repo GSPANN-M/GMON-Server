@@ -13,11 +13,11 @@ function index(req, res) {
 			originaldata = parseString.toJson(originaldata);
 			var data = JSON.parse(originaldata);
 			var actual_JSON = data['nodes'];
-		    var chartJson = {};
+		    var chartJson = [];
 		    var i = 0;
 		    for(var parentNode in actual_JSON){
 		        chartJson[i] = {
-		                "id":actual_JSON[parentNode]['cmdbId'],
+		                "id":'m-'+actual_JSON[parentNode]["cmdbId"],
 		                "name" : actual_JSON[parentNode]['name'],
 		                "loaded":true,
 		                "linkId" : actual_JSON[parentNode]['id']};
@@ -29,7 +29,7 @@ function index(req, res) {
 		                        var dimensionArray = new Array();
 		                        dimensionArray=actual_JSON[parentNode][p1][p2][p3]['dimension'];
 		                        chartJson[i] = {
-		                                "id":actual_JSON[parentNode][p1][p2][p3]['cmdbId'],
+		                                "id":'m-'+actual_JSON[parentNode][p1][p2][p3]['cmdbId'],
 		                                "name" : actual_JSON[parentNode][p1][p2][p3]['name'],
 		                                "loaded":true,
 		                                "linkId" : actual_JSON[parentNode][p1][p2][p3]['id'],
@@ -40,16 +40,16 @@ function index(req, res) {
 		                            if(p4=='children'){
 		                                for(var p5 in actual_JSON[parentNode][p1][p2][p3][p4]){
 		                                    for(var p6 in actual_JSON[parentNode][p1][p2][p3][p4][p5]){
-		                                        var dimensionArray = new Array();
-		                                        dimensionArray=actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['dimension'];
-		                                        chartJson[i] = {
-		                                                "id":actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['cmdbId'],
-		                                                "name" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['name'],
-		                                                "loaded":true,
-		                                                "linkId" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['id'],
-		                                                "dimension":dimensionArray
-		                                        };
-		                                        i++;
+												var dimensionArray = new Array();
+													dimensionArray=actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['dimension'];
+													chartJson[i] = {
+															"id":'m-'+actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['cmdbId'],
+															"name" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['name'],
+															"loaded":true,
+															"linkId" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]['id'],
+															"dimension":dimensionArray
+													};
+													i++;
 		                                        for (var p7 in actual_JSON[parentNode][p1][p2][p3][p4][p5][p6]){
 		                                            if(p7=='children'){
 		                                                for(var p8 in actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7]){
@@ -58,7 +58,7 @@ function index(req, res) {
 		                                                            var dimensionArray = new Array();
 		                                                            dimensionArray=actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8][p9]['dimension'];
 		                                                            chartJson[i] = {
-		                                                                    "id":actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8][p9]['cmdbId'],
+		                                                                    "id":'m-'+actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8][p9]['cmdbId'],
 		                                                                    "name" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8][p9]['name'],
 		                                                                    "loaded":true,
 		                                                                    "linkId" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8][p9]['id'],
@@ -70,7 +70,7 @@ function index(req, res) {
 		                                                        var dimensionArray = new Array();
 		                                                        dimensionArray=actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8]['dimension'];
 		                                                        chartJson[i] = {
-		                                                                "id":actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8]['cmdbId'],
+		                                                                "id":'m-'+actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8]['cmdbId'],
 		                                                                "name" : actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8]['name'],
 		                                                                "loaded":true,
 		                                                                "linkId": actual_JSON[parentNode][p1][p2][p3][p4][p5][p6][p7][p8]['id'],
@@ -90,7 +90,6 @@ function index(req, res) {
 		            }
 		        }
 		    }
-			
 			fs.writeFile("./data-nodes.json", JSON.stringify(chartJson, null, 4), function(err) {
 				if(err) {
 					console.log(err);
@@ -105,6 +104,12 @@ function index(req, res) {
 }
 
 function getNodes(req, res){
+	
+	res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-requested-with');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
 	var fs = require('fs'); //file handling module
 	var responseJSON ={};
 	fs.readFile('./data-nodes.json', 'utf8', function (err, data) {
@@ -116,7 +121,7 @@ function getNodes(req, res){
 			if(data){
 				responseJSON = JSON.parse(data);
 				res.setHeader('Content-Type', 'application/json');
-				res.send(data);
+				res.send(responseJSON);
 				res.end();
 			}else{
 				res.setHeader('Content-Type', 'application/json');
