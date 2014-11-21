@@ -14,6 +14,7 @@ function index(req, res) {
 			var data = JSON.parse(originaldata);
 			var actual_JSON = data['nodes'];
 		    var chartJson = [];
+		    var finalJson = [];  //To hold complete JSON with timestamp
 		    var i = 0;
 		    for(var parentNode in actual_JSON){
 		        chartJson[i] = {
@@ -90,7 +91,16 @@ function index(req, res) {
 		            }
 		        }
 		    }
-			fs.writeFile("./data-nodes.json", JSON.stringify(chartJson, null, 4), function(err) {
+		    finalJson[0] = chartJson;
+		    finalJson[1] = [{Timestamp: Date.now()}];  //This method was standardized in ECMA-262 5th edition
+		    
+		     /*	Engines which have not been updated to support this method 
+		      	can work around the absence of this method using the following shim:*/
+		    if (!Date.now) {
+			    Date.now = function() { return new Date().getTime(); };
+			}
+			
+			fs.writeFile("./data-nodes.json", JSON.stringify(finalJson, null, 4), function(err) {
 				if(err) {
 					console.log(err);
 				} else {
